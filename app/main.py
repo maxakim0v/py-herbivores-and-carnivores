@@ -1,29 +1,18 @@
-from __future__ import annotations
-
-
 class Animal:
-    alive: list[Animal] = []
 
-    def __init__(
-            self,
-            name: str,
-            health: int = 100,
-            hidden: bool = False
-    ) -> None:
+    alive = []
+
+    def __init__(self,
+                 name: str,
+                 health: int = 100,
+                 hidden: bool = False) -> None:
         self.name = name
         self.health = health
         self.hidden = hidden
-        if self.health > 0:
-            Animal.alive.append(self)
-
-    def die(self) -> None:
-        if self.health <= 0:
-            if self in Animal.alive:
-                Animal.alive.remove(self)
+        Animal.alive.append(self)
 
     def __repr__(self) -> str:
-        return (f"{{Name: {self.name}, "
-                f"Health: {self.health}, "
+        return (f"{{Name: {self.name}, Health: {self.health}, "
                 f"Hidden: {self.hidden}}}")
 
 
@@ -33,8 +22,11 @@ class Herbivore(Animal):
 
 
 class Carnivore(Animal):
-    def bite(self, target: Animal) -> None:
-        if isinstance(target, Herbivore) and not target.hidden:
-            target.health -= 50
-            if target.health <= 0:
-                target.die()
+    @staticmethod
+    def bite(prey: object) -> None:
+        if isinstance(prey, Herbivore) and not prey.hidden:
+            prey.health -= 50
+        if prey.health <= 0:
+            prey.health = 0
+            if prey in Animal.alive:
+                Animal.alive.remove(prey)
